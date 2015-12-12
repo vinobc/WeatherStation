@@ -1,0 +1,8 @@
+This is a web based Weather application created using Raspberry Pi B+
+The app uses DHT 22 sensor for getting temperature and humudity readings
+One can use this app  primarily for:
+   - real time monitoring of tmp. and humidity data
+   - historical weather data analysis
+
+technologies used on the pi:
+minibian,python, nginx, uwsgi, flask, jinja, sqlite3, plotly, arrow, js, css, html
