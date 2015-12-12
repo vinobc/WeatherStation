@@ -1,0 +1,10 @@
+plotly/matplotlylib
+plotly
+plotly/graph_objs
+plotly/widgets
+plotly/plotly/chunked_requests
+plotly/plotly
+plotly/matplotlylib/mplexporter
+plotly/grid_objs
+plotly/offline
+plotly/matplotlylib/mplexporter/renderers

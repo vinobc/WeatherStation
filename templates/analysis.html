@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>HWDA</title>
+    <meta name="description" content="Real Time Weather Monitor - Analysis">
+    <meta name="author" content="R. Vinob chander">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/static/css/normalize.css">
+    <link rel="stylesheet" href="/static/css/skeleton.css">
+    <link rel="icon" type="image/png" href="/static/images/favicon.png">
+  </head>
+  <body>
+    <center><h2><strong>Historical  Weather Data Analysis <br />
+            @<i><p style="color:maroon">the computer lab - IFIM Bangalore</p></i></strong></h2></center>
+    <div class="container">
+       <div class="row">
+          <a href="/rtwm" style="font-size:20px;position:relative;top:15px">present tmp. & hmd. readings</a>
+       </div>
+       <br/>
+       <div class="row">
+           <a href="" id="cloud" style="font-size:20px;position:relative;top:15px">readings in the cloud..</a>
+       </div>
+       <br />
+        <div class="row">
+     <a href="" id="url" target="_blank"></a><br /><br /><span id="wt"></span>
+  </div>
+      <!-- Datetimepicker form start -->
+      <div class="row">
+        <form id="datetimepicker_range" action="/analysis" method="GET"> 
+            <div class="three columns">
+              <label for="from">From:</label>
+              <input class="u-full-width" id="dtp1" type="text" value="{{fd}}" name="f">
+            </div>        
+            <div class="three columns">
+              <label for="to">To:</label>           
+              <input class="u-full-width" id="dtp2" type="text" value="{{td}}" name="t">
+            </div>           
+            <div class="two columns">  
+              <input type="hidden" class="timezone" name="timezone" />  
+              <input class="button-primary" type="submit" value="Submit" style="position:relative; top: 28px" id="submit_button" />
+            </div>        
+        </form> 
+      </div>
+    <!-- Datetimepicker form end -->
+      <div class="row">
+      <div class="eleven columns">
+        <form id="button_range_select" action = "/analysis" method="GET">
+        <input type="hidden" class="timezone" name="timezone" />        
+          <div class="one column">
+            <input type="radio" name="button_range_h" value="1" id="b1" /><label for="b1">1hr</label>
+          </div>
+          <div class="one column">
+            <input type="radio" name="button_range_h" value="6" id="b6" /><label for="b6">6hrs</label>
+          </div>
+          <div class="one column">
+            <input type="radio" name="button_range_h" value="12" id="b12" /><label for="b12">12hrs</label>
+          </div>
+          <div class="one column">
+            <input type="radio" name="button_range_h" value="24" id="b24" /><label for="b24">24hrs</label>
+          </div>
+        </form>
+      </div>
+      </div>
+     
+      <div class="row">          
+        <div class="one-third column" style="margin-top: 5%">
+            <h3><i>Temperatures:</i></h3>                    
+            <table class="u-full-width">
+              <thead>
+                <tr>
+                   <th><h5>&deg;C</h5></th> 
+                   <th><h5>&deg;F</h5></th> 
+                  <th><h5>Date_Time</h5></th>                       
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in tc %}
+                <tr>
+                  <td>{{'%0.2f'|format(r[1])}}</td>
+                  <td>{{'%0.2f'|format(r[1] * 1.8 + 32 )}}</td>
+                  <td>{{r[0]}}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>  
+            <h3><i>Humidities:</i></h3>
+            <table class="u-full-width">
+              <thead>
+                <tr>
+                  <th><h5>%</h5></th>  
+                  <th><h5>Date_Time</h5></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in h %}
+                <tr>
+                  <td>{{'%0.2f'|format(r[1])}}</td>
+                  <td>{{r[0]}}</td>
+                  </tr>          
+                {% endfor %}
+              </tbody>
+            </table>                                              
+        </div>
+         <!-- Google Charts Code start -->
+      <div class="two-thirds column" style="margin-top: 5%">
+        <div class="row">                  
+          <div class="row">
+            <div class="three columns">
+              <div id="t_chart"></div>
+              <div id="h_chart"></div>
+            </div>
+          </div>
+        </div>     
+      </div>
+      <!-- Google Charts Code end -->
+    </div>           
+  </body>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <!-- Datetimepicker files start -->
+  <link rel="stylesheet" type="text/css" href="/static/css/jquery.datetimepicker.css"/ >
+  <script src="/static/js/jquery.js"></script>
+  <script src="/static/js/jquery.datetimepicker.full.min.js"></script>
+   <!-- jstimezonedetect script start -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js" ></script>
+  <script> 
+  //This code is for the datetime range form
+  jQuery( "#datetimepicker_range" ).submit(function( event ) {
+      timezone = jstz.determine();
+      jQuery(".timezone").val(timezone.name());      
+  });
+  </script> 
+  <!-- jstimezonedetect script end -->
+
+  <script>
+    jQuery('#dtp1').datetimepicker(
+      {
+        format:'Y-m-d H:i',
+        defaultDate:'{{fd}}'
+      });
+    jQuery('#dtp2').datetimepicker({
+        format:'Y-m-d H:i',
+        defaultDate:'{{td}}'
+      });
+      jQuery("#button_range_select input[type=radio]").click(function(){
+      timezone = jstz.determine();                
+      jQuery(".timezone").val(timezone.name());   
+      jQuery("#button_range_select").submit();
+    });
+      jQuery("#cloud").click(function(){
+      jQuery("#wt").text("Sending data...");
+      jQuery("#url").text("");
+      {% autoescape false %}
+      jQuery.get("/at_cloud?{{query_string}}")
+      {% endautoescape %}
+        .done(function( data ) {
+          jQuery("#url").attr("href",data);
+          jQuery("#url").text("Click to see the chart..");
+          jQuery("#wt").text("");            
+    });
+        return false; //This is so that the click on the link does not cause the page to refresh
+  });
+  </script>
+  <!-- Datetimepicker files end -->
+  <script>
+    jQuery("#button_range_select input[type=radio]").click(function(){
+      jQuery("#button_range_select").submit();
+    });
+  </script>
+   <!-- Google Charts JS start -->
+  <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
+
+  <script>
+    google.load('visualization', '1', {packages: ['corechart']});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('datetime', 'Time');  
+      data.addColumn('number', 'tmp.');      
+      data.addRows([
+          {% for row in tc %} 
+            [new Date({{row[0][0:4]}},{{row[0][5:7]}},{{row[0][8:10]}},{{row[0][11:13]}},{{row[0][14:16]}}),
+                {{'%0.2f'|format(row[1])}}],
+          {% endfor %}
+        ]);
+      var options = {
+        width: 700,
+        height: 563,
+        hAxis: {
+          title: "date_time",
+          gridlines: { count: {{ti}}, color: '#CCC' },
+          format: 'dd-MMM-yyyy HH:mm' },
+        vAxis: {
+          title: 'deg.'
+        },
+        title: 'temperature',
+        curveType: 'function'  //Makes line curved
+      };
+      var chart = new google.visualization.LineChart(document.getElementById('t_chart'));
+      chart.draw(data, options);
+    }
+  </script>
+
+  <script>
+    google.load('visualization', '1', {packages: ['corechart']});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('datetime', 'Time');  
+      data.addColumn('number', 'hmd.');      
+      data.addRows([
+          {% for row in h %}
+            [new Date({{row[0][0:4]}},{{row[0][5:7]}},{{row[0][8:10]}},{{row[0][11:13]}},{{row[0][14:16]}}),{{'%0.2f'|format(row[1])}}],
+          {% endfor %}
+        ]);
+      var options = {
+        width: 700,
+        height: 563,
+        hAxis: {
+          title: "date_time",
+          gridlines: { count: {{hi}}, color: '#CCC' },
+          format: 'dd-MMM-yyyy HH:mm'        },
+        vAxis: {
+          title: '%'
+        },
+        title: 'humidity',
+        curveType: 'function'  //Makes line curved
+      };
+      var chart = new google.visualization.LineChart(document.getElementById('h_chart'));
+      chart.draw(data, options);
+    }
+  </script>  
+  <!-- Google Charts JS end -->
+</html>

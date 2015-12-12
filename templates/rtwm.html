@@ -1,0 +1,55 @@
+<html>
+  <meta charset="utf-8">
+  <title>RTWM</title>
+  <meta http-equiv="refresh" content="10">
+  <meta name="description" content="Real Time Weather Monitor">
+  <meta name="author" content="R. Vinob chander">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/static/css/normalize.css">
+  <link rel="stylesheet" href="/static/css/skeleton.css">
+  <link rel="icon" type="image/png" href="/static/images/favicon.png">
+</head>
+  <body>
+    <center><h2><strong>Real Time Weather Info. <br />
+ @ <i><p style="color:maroon">the computer lab - IFIM Bangalore</p></i></strong></h2></center>
+    <div class="container">
+       <div class="row">
+          <a href="/analysis" style="font-size:20px;position:relative;top:15px">analysis..</a>
+       </div>
+    
+      <div class="row">
+        <div class="two-third column" style="margin-top: 5%">
+          <h3><i>Temperature:</i></h3>    
+            <table class="u-full-width">
+              <thead>
+                <tr>
+                   <th><h4>&deg;C</h4></th> 
+                   <th><h4>&deg;F</h4></th>                     
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><h5>{{"{0:0.2f}".format(tc) }}</h5></td>
+                  <td><h5>{{"{0:0.2f}".format(tc * 1.8 + 32) }}</h5></td>
+              </tr>
+            </tbody>
+            </table>
+             <h3><i>Humidity:</i></h3>    
+            <table class="u-full-width">
+              <thead>
+                <tr>
+                  <th><h4>%</h4></th>               
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><h5>{{"{0:0.2f}".format(h) }}°C</h5></td>
+              </tr>
+            </tbody>
+            </table>    
+            <b><span style="color:red;font-size:1.2em"><i>weather update every 10 secs..</i></span></b>
+        </div>   
+      </div>
+  </body>  
+</html>
